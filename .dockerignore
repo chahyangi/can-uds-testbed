@@ -1,0 +1,9 @@
+.git
+.github
+.venv
+artifacts
+third_party
+tests
+*.pdf
+__pycache__
+*.pyc

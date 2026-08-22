@@ -1,0 +1,22 @@
+name: testbed-checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit-and-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Python unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Build iso14229 Linux ECU
+        run: make iso14229-build
+      - name: QEMU smoke test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86
+          make qemu-check

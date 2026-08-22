@@ -1,0 +1,10 @@
+services:
+  gallia-vecu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gallia
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /run:/run

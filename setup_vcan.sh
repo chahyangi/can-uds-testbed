@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # vcan0 인터페이스 생성 및 활성화 (재부팅 시마다 필요)
-set -e
+set -euo pipefail
 sudo modprobe vcan
 sudo modprobe can-isotp
-if ! ip link show vcan0 &>/dev/null; then
+if ! ip link show vcan0 >/dev/null 2>&1; then
     sudo ip link add dev vcan0 type vcan
 fi
 sudo ip link set vcan0 up

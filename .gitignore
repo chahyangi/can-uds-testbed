@@ -1,4 +1,5 @@
+artifacts/
 __pycache__/
 *.pyc
-venv/
-artifacts/
+.venv/
+third_party/iso14229/examples/linux_server/server
