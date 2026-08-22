@@ -54,15 +54,37 @@ gallia primitive uds pdu \
 candump -L vcan0
 ```
 
+## 공격 실습 (0x22 과부하 · 세션 거부)
+
+VehicleSec 2024 논문(Exploiting Diagnostic Protocol Vulnerabilities on
+Embedded Networks in Commercial Vehicles)의 V-A, V-B 공격을 이 테스트베드의
+가상 ECU에 재현합니다.
+
+```bash
+./setup_vcan.sh
+./scripts/run_stateful_ecu.sh &          # 터미널 1: 세션 잠금이 있는 ECU
+python3 attacks/overload_0x22.py --interface vcan0 --sweep-ms 0.1,0.5,2 --duration 2
+python3 attacks/session_denial.py --interface vcan0 --duration 20 --probe
+```
+
+`make attack-test`로 두 공격을 자동 실행하고 증빙 로그를
+`artifacts/attacks/<timestamp>/`에 저장할 수 있습니다. 공격 원리와
+`fake_ecu.py` 대신 세션 상태를 갖는 `stateful_ecu.py`를 새로 둔 이유는
+[docs/ATTACKS.md](docs/ATTACKS.md)를 참고하세요.
+
 ## 저장소 구성
 
 - `fake_ecu.py`: 읽기 쉬운 Python UDS ECU
+- `stateful_ecu.py`: 단일 활성 세션 잠금이 있는 Python UDS ECU (세션 거부 공격 대상)
+- `attacks/overload_0x22.py`: 0x22 ReadDataByIdentifier 과부하 공격
+- `attacks/session_denial.py`: 0x10 세션 선점 + 0x3E 유지로 정상 접속을 막는 공격
 - `scripts/run_gallia_vecu.sh`: seed가 고정된 Gallia 랜덤 ECU
 - `scripts/test_gallia_vecu.sh`: 자동 Request/Response/NRC 검증
+- `scripts/run_stateful_ecu.sh`, `scripts/test_attacks.sh`: 공격 실습용 ECU 기동과 자동 증빙 수집
 - `third_party/iso14229`: C 기반 ECU 구현(고정된 Git submodule)
 - `Dockerfile.gallia`, `compose.yaml`: 컨테이너 실행 환경
-- `docs/`: 구조, 보고서 증빙, 문제 해결 문서
+- `docs/`: 구조, 공격 실습, 보고서 증빙, 문제 해결 문서
 
-구조와 도구 선택은 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), 보고서용
-스크린샷과 로그 기준은 [docs/REPORT_EVIDENCE.md](docs/REPORT_EVIDENCE.md)를
-참고하세요.
+구조와 도구 선택은 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), 공격
+실습은 [docs/ATTACKS.md](docs/ATTACKS.md), 보고서용 스크린샷과 로그 기준은
+[docs/REPORT_EVIDENCE.md](docs/REPORT_EVIDENCE.md)를 참고하세요.
