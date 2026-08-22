@@ -15,6 +15,9 @@
 | QEMU 기본 구성 | 완료 | QEMU 8.2.2 x86_64 TCG machine 기동 |
 | GitHub 실행 환경 공유 | 완료 | 재현 스크립트·테스트·문서 커밋 및 원격 저장소 업로드 |
 
+GitHub Actions의 `testbed-checks` 워크플로도 원격 `main` push에서 성공했다
+([run 32570137599](https://github.com/chahyangi/can-uds-testbed/actions/runs/32570137599)).
+
 ## 전체 회귀 검증 결과
 
 아래 항목을 한 번에 재검증했다.
