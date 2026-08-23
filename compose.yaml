@@ -1,10 +1,36 @@
 services:
+  can-bus:
+    build:
+      context: .
+      dockerfile: Dockerfile.gallia
+    cap_add:
+      - NET_ADMIN
+    command: ["bus"]
+    healthcheck:
+      test: ["CMD-SHELL", "ip link show $${CAN_INTERFACE:-vcan0} >/dev/null 2>&1"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
   gallia-vecu:
     build:
       context: .
       dockerfile: Dockerfile.gallia
-    network_mode: host
-    cap_add:
-      - NET_ADMIN
-    volumes:
-      - /run:/run
+    network_mode: "service:can-bus"
+    depends_on:
+      can-bus:
+        condition: service_healthy
+    command: ["vecu"]
+
+  tester:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: Dockerfile.gallia
+    network_mode: "service:can-bus"
+    depends_on:
+      can-bus:
+        condition: service_healthy
+      gallia-vecu:
+        condition: service_started
+    command: ["test"]

@@ -1,4 +1,4 @@
-.PHONY: setup-vcan bootstrap unit gallia-test iso14229-build iso14229-test qemu-check docker-build docker-test stateful-ecu attack-test
+.PHONY: setup-vcan bootstrap unit gallia-test iso14229-build iso14229-test qemu-check docker-build docker-test docker-portable-test stateful-ecu attack-test
 
 setup-vcan:
 	./setup_vcan.sh
@@ -18,6 +18,8 @@ docker-build:
 	docker build -f Dockerfile.gallia -t can-uds-gallia:2.1.1 .
 docker-test:
 	./scripts/test_docker_gallia.sh
+docker-portable-test:
+	./scripts/run_portable_docker.sh
 stateful-ecu:
 	./scripts/run_stateful_ecu.sh
 attack-test:

@@ -32,6 +32,27 @@ make qemu-check
 `make gallia-test`는 Gallia 가상 ECU, Tester, `candump`를 자동으로 실행하고
 결과를 `artifacts/gallia-vecu/<timestamp>/`에 저장합니다.
 
+## 다른 Linux 컴퓨터에서 Docker로 한 번에 재현
+
+Docker Engine과 Compose plugin이 설치된 Linux 컴퓨터에서는 다음 한 줄로
+컨테이너 이미지 빌드, 가상 CAN 버스 생성, Gallia ECU 기동, Tester 검증을
+한 번에 실행할 수 있습니다.
+
+```bash
+make docker-portable-test
+```
+
+기존 Docker 실습은 Ubuntu 호스트에 만들어 둔 `vcan0`를 `--network host`로
+컨테이너가 빌려 쓰는 방식이었습니다. 새 Compose 구성은 `can-bus` 컨테이너의
+네트워크 namespace 안에 `vcan0`를 만들고, `gallia-vecu`와 `tester` 컨테이너가
+그 namespace를 공유합니다. 따라서 호스트에 미리 `vcan0`를 만들 필요가 없고,
+테스트가 끝나면 컨테이너와 함께 인터페이스도 사라집니다.
+
+단, 컨테이너도 호스트 커널을 사용하므로 Linux 호스트가 `vcan`과 `can-isotp`
+커널 모듈을 제공해야 합니다. 실행 스크립트가 두 모듈을 `modprobe`하며 sudo
+권한이 필요합니다. Windows/macOS Docker Desktop은 SocketCAN 커널 지원을
+보장하지 않으므로 이 경로의 지원 대상이 아닙니다.
+
 ## 수동 3-터미널 실습
 
 터미널 1 — 가상 ECU:

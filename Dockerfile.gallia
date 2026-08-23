@@ -5,7 +5,10 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     rm -rf /var/lib/apt/lists/* && \
     pipx install gallia==2.1.1
 ENV PATH="/root/.local/bin:${PATH}"
+ENV PYTHONUNBUFFERED=1
 WORKDIR /testbed
 COPY scripts/run_gallia_vecu.sh /usr/local/bin/run-gallia-vecu
-RUN chmod +x /usr/local/bin/run-gallia-vecu
-ENTRYPOINT ["run-gallia-vecu"]
+COPY scripts/docker_testbed_entrypoint.sh /usr/local/bin/docker-testbed
+RUN chmod +x /usr/local/bin/run-gallia-vecu /usr/local/bin/docker-testbed
+ENTRYPOINT ["docker-testbed"]
+CMD ["vecu"]

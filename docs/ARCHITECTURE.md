@@ -26,3 +26,20 @@ QEMU is installed and smoke-tested as a shared skill, but it is not in the CAN
 request/response path yet. On a Windows x86_64 PC, an amd64 Ubuntu image is
 correct. ARM64 is needed only when an ARM board or firmware is deliberately
 emulated.
+
+## Portable Docker topology
+
+```text
+Linux host kernel (vcan + can-isotp modules)
+  └── can-bus container network namespace
+        ├── vcan0 (created here, not on the host namespace)
+        ├── Gallia vECU container
+        └── Gallia Tester container
+```
+
+`compose.yaml` makes the ECU and Tester share the `can-bus` service's network
+namespace. This removes the old dependency on a pre-created host `vcan0` and
+keeps the virtual bus scoped to the Compose application. It does not package a
+kernel: Docker still uses the Linux host kernel, so the host must provide the
+`vcan` and `can-isotp` modules. Run `make docker-portable-test` for the complete
+build-and-test path.

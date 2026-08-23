@@ -3,8 +3,8 @@ set -euo pipefail
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  build-essential can-utils docker.io git iproute2 pipx python3 python3-venv \
-  qemu-system-x86
+  build-essential can-utils docker.io docker-compose-v2 git iproute2 pipx \
+  python3 python3-venv qemu-system-x86
 
 if ! command -v gallia >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/gallia" ]; then
   pipx install gallia==2.1.1
